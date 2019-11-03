@@ -18,11 +18,12 @@
             <template v-if="!checkMode">
 
                 <h2>Создание списка</h2>
-                <p>Запишите гостей в поле</p>
+                <button @click="clearGuests">Очистить список</button>
+                <p>Запишите гостей в поле:</p>
                 <input v-model="inputGuest" @keyup.enter="addGuest" placeholder="Гость. Добавить по Enter">
                 <button @click="addGuest">Добавить гостя</button>
-                <ul>
-                    <li v-for='guest in guests'>{{ guest }}</li>
+                <ul class='list'>
+                    <li v-for='(guest, n) in guests'>{{ guest.name }} <button @click='delGuest(n)'>Удалить</button></li>
                 </ul>
             </template>
             <template v-else>
@@ -36,8 +37,8 @@
                     </tr><!-- Table Header -->
 
                     <tr v-for='guest in guests'>
-                        <td>{{ guest }}</td>
-                        <td><button @click='hasComeFunc'>Пришел</button></td>
+                        <td :class='{decor: guest.come}'>{{ guest.name }}</td>
+                        <td><button @click='hasComeFunc(guest)'>Пришел</button></td>
                     </tr><!-- Table Row -->
 
 
@@ -51,18 +52,58 @@
             data: {
                 checkMode: true,
                 inputGuest: "",
-                guests: []
+                guests: [],
+                come: false
 
+            },
+            mounted() {
+                if (localStorage.getItem('guests')) {
+                    try {
+                        this.guests = JSON.parse(localStorage.getItem('guests'));
+                    } catch (e) {
+                        localStorage.removeItem('guests');
+                    }
+                }
             },
             methods: {
                 addGuest: function() {
-                    this.guests.push(this.inputGuest);
+                    if (!this.inputGuest) {
+                        return;
+                    }
+                    this.guests.push({
+                        name: this.inputGuest,
+                        come: this.come
+                    });
                     this.inputGuest = "";
                     this.guests.sort();
+                    this.saveGuests();
                 },
-                hasComeFunc(event) {
-                    event.target.parentElement.parentElement.firstChild.style = "text-decoration: line-through;"
+                delGuest(x) {
+                    this.guests.splice(x, 1)
+                    this.saveGuests();
+                },
+                clearGuests() {
+                    this.guests = [];
+                    this.saveGuests();
+                },
+                hasComeFunc(guest) {
+                    // event.target.parentElement.parentElement.firstChild.style = "text-decoration: line-through;"
+                    guest.come = !guest.come;
+                    console.log(guest)
+                    this.guests.map(function(x) {
+                        if (guest.name == x.name) {
+                            guest.come = x.come
+                        }
+                    })
+                    this.saveGuests();
+
+                },
+                saveGuests() {
+                    const parsed = JSON.stringify(this.guests);
+                    localStorage.setItem('guests', parsed);
                 }
+
+
             },
         })
     </script>

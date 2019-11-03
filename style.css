@@ -4,6 +4,11 @@
     background: cornflowerblue;
 }
 
+.list {
+    margin-left: 32%;
+    text-align: left;
+}
+
 .knopka {
     color: #fff;
     /* цвет текста */
