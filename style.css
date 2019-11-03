@@ -1,11 +1,9 @@
 .decor {
     text-decoration: line-through;
-    color: red;
-    background: cornflowerblue;
 }
 
 .list {
-    margin-left: 32%;
+    margin-left: 25%;
     text-align: left;
 }
 
