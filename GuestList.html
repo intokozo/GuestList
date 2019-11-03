@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Список гостей</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class='center'>
+            <button id='create' class='knopka' @click='checkMode = false'>Режим создания списка</button>
+            <button id='check' class='knopka' @click='checkMode = true'>Режим проверки списка</button>
+
+            <template v-if="!checkMode">
+
+                <h2>Создание списка</h2>
+                <p>Запишите гостей в поле</p>
+                <input v-model="inputGuest" @keyup.enter="addGuest" placeholder="Гость. Добавить по Enter">
+                <button @click="addGuest">Добавить гостя</button>
+                <ul>
+                    <li v-for='guest in guests'>{{ guest }}</li>
+                </ul>
+            </template>
+            <template v-else>
+
+                <h2>Проверка списка</h2>
+                <table class="simple-little-table" cellspacing='0'>
+                    <tr>
+                        <th>Гость</th>
+                        <th>Управление</th>
+
+                    </tr><!-- Table Header -->
+
+                    <tr v-for='guest in guests'>
+                        <td>{{ guest }}</td>
+                        <td><button @click='hasComeFunc'>Пришел</button></td>
+                    </tr><!-- Table Row -->
+
+
+            </template>
+        </div>
+    </div>
+    <script src="vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                checkMode: true,
+                inputGuest: "",
+                guests: []
+
+            },
+            methods: {
+                addGuest: function() {
+                    this.guests.push(this.inputGuest);
+                    this.inputGuest = "";
+                    this.guests.sort();
+                },
+                hasComeFunc(event) {
+                    event.target.parentElement.parentElement.firstChild.style = "text-decoration: line-through;"
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
